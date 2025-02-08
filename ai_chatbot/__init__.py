@@ -62,7 +62,7 @@ joke_message = [SystemMessage(content="Act as a world class stand-up comedian. G
 
 
 def chatbot():
-    print("Welcome to the AI chatbot. Ask me anything about your pdf!")
+    print("\nWelcome to the AI chatbot. Ask me anything about your pdf!")
     chat_history = []
     joke_history = []
     while True:

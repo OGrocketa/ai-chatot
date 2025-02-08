@@ -1,0 +1,4 @@
+.env
+.venv
+ai_chatbot/__pycache__/RagHandler.cpython-312.pyc
+/ai_chatbot/db
