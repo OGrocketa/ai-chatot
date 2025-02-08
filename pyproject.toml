@@ -1,0 +1,26 @@
+[project]
+name = "ai-chatbot"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Yaraslau Sedach",email = "jaroslaw.sedach@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "langchain (>=0.3.17,<0.4.0)",
+    "langchain-groq (>=0.2.4,<0.3.0)",
+    "python-dotenv (>=1.0.1,<2.0.0)",
+    "langchain-google-firestore (>=0.5.0,<0.6.0)",
+    "sentence-transformers (>=3.4.1,<4.0.0)",
+    "langchain-huggingface (>=0.1.2,<0.2.0)",
+    "langchain-community (>=0.3.16,<0.4.0)",
+    "chromadb (>=0.6.3,<0.7.0)",
+    "pypdf (>=5.2.0,<6.0.0)",
+    "langchain-chroma (>=0.2.1,<0.3.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
