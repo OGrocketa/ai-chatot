@@ -16,8 +16,9 @@ llm = ChatGroq(model="llama-3.3-70b-versatile")
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 ragHandler = RagHandler()
-pdf_path = os.path.join(os.path.dirname(__file__),"test.pdf")
-ragHandler.create_chroma_storage_from_pdf(pdf_path)
+pdf_directory = os.path.join(os.path.dirname(__file__), "../pdfs")
+
+ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
 
 contextualize_q_system_prompt = (
     "Given a chat history and the latest user question "
@@ -41,8 +42,8 @@ qa_system_prompt = (
     "You are an assistant for question-answering tasks. Use "
     "the following pieces of retrieved context to answer the "
     "question. If you don't know the answer, just say that you "
-    "don't know. Use three sentences maximum and keep the answer "
-    "concise."
+    "don't know. If the knowledge is in the context start with from the pdf:...."
+    " If the knwoledge is not in the context, you can answer using your knwoledge"
     "\n\n"
     "{context}"
 )
@@ -62,7 +63,7 @@ joke_message = [SystemMessage(content="Act as a world class stand-up comedian. G
 
 
 def chatbot():
-    print("\nWelcome to the AI chatbot. Ask me anything about your pdf!")
+    print("\nWelcome to the AI chatbot. Ask me anything about your pdf!\nType 'e' to exit.")
     chat_history = []
     joke_history = []
     while True:
@@ -84,7 +85,7 @@ def chatbot():
 
 
         print("--------------------------------")
-        print("AI: ", response["answer"], "\nJoke:",joke_response.content)
+        print("AI: ", response["answer"], "\n\nJoke:",joke_response.content)
         print("--------------------------------\n")
 
         chat_history.append(HumanMessage(content=user_input))

@@ -13,25 +13,56 @@ class RagHandler:
         self.current_dir = os.path.dirname(__file__)
         self.presistent_directory = os.path.join(self.current_dir, "db", "chroma_db")
 
-    def create_chroma_storage_from_pdf(self, pdfPath):
+    def create_chroma_storage_from_pdf_directory(self, pdf_directory):
+        """
+        Loads all PDF files from the provided directory, splits them into chunks,
+        adds metadata (e.g., filename) to each document, and creates a persistent
+        Chroma vector store if it does not already exist.
+        """
+        # Only initialize the vector store if it doesn't already exist.
         if not os.path.exists(self.presistent_directory):
-
-            if not os.path.exists(pdfPath):
+            print("Initializing vector store...")
+            if not os.path.exists(pdf_directory):
                 raise FileNotFoundError(
-                    f"the file {pdfPath} does not exist. please check the path."
+                    f"The directory {pdf_directory} does not exist. Please check the path."
                 )
             
-            loader = PyPDFLoader(pdfPath)
-            docs = loader.load()
+            # Gather all PDF files in the directory.
+            pdf_files = [
+                os.path.join(pdf_directory, file)
+                for file in os.listdir(pdf_directory)
+                if file.lower().endswith(".pdf")
+            ]
             
+            if not pdf_files:
+                raise FileNotFoundError("No PDF files found in the specified directory.")
+            
+            all_docs = []
+            for pdf_file in pdf_files:
+                loader = PyPDFLoader(pdf_file)
+                docs = loader.load()
+                
+                # Optionally add metadata (like the filename) to each document.
+                for doc in docs:
+                    doc.metadata = doc.metadata or {}
+                    doc.metadata["source"] = os.path.basename(pdf_file)
+                
+                all_docs.extend(docs)
+            
+            # Split the documents into manageable chunks.
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-            pdf_chunks = text_splitter.split_documents(docs)
+            pdf_chunks = text_splitter.split_documents(all_docs)
             
+            # Create embeddings.
             embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
             
+            # Create and persist the vector store.
             Chroma.from_documents(
                 pdf_chunks, embeddings, persist_directory=self.presistent_directory
             )
+        else:
+            print("Vector store already exists. Skipping initialization.")
+
     
     def get_relevant_info_from_chroma(self, query):
         # default to mmr retriever if no type is provided
