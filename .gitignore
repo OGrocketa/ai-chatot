@@ -2,5 +2,4 @@
 .venv
 ai_chatbot/__pycache__/
 /ai_chatbot/db
-/pdfs
 lesson_links.json
