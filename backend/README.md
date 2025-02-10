@@ -16,6 +16,7 @@ An AI-powered chatbot that uses LangChain and PDF processing to answer questions
    cd ai-chatbot
 
 2. **Install dependencies:**
+    ```shell
     poetry install
 
 
@@ -33,5 +34,6 @@ An AI-powered chatbot that uses LangChain and PDF processing to answer questions
     LANGCHAIN_API_KEY="your_langchain_api_key"
 
 4. **To run the main chatbot application:**
+    ```shell
     cd backend
     poetry run python ai_chatbot/__main__.py
