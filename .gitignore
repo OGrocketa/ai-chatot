@@ -1,6 +1,9 @@
 .env
 .venv
-ai_chatbot/__pycache__/
 /ai_chatbot/db
 lesson_links.json
 .DS_Store
+.gradio
+/ai_chatbot/__pycache__/
+*.pyc
+/backend/ai_chatbot/db/*

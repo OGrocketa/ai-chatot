@@ -1,7 +1,10 @@
 # ai-chatbot
 
-An AI-powered chatbot that uses LangChain and PDF processing to answer questions from documents.
-
+An AI-powered chatbot that uses LangChain and PDF processing to answer questions from documents.<br />
+AI's used: 
+- llama-3.3-70b-versatile (Groq API)<br />
+- all-MiniLM-L6-v2 (HuggingFace embeddings)
+ 
 ## Prerequisites
 
 - Python 3.12 (or later, but below 4.0)
@@ -35,5 +38,4 @@ An AI-powered chatbot that uses LangChain and PDF processing to answer questions
 
 4. **To run the main chatbot application:**
     ```shell
-    cd backend
-    poetry run python ai_chatbot/__main__.py
+    poetry run python backend/ai_chatbot/__init__.py
