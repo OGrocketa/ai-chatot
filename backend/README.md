@@ -33,4 +33,5 @@ An AI-powered chatbot that uses LangChain and PDF processing to answer questions
     LANGCHAIN_API_KEY="your_langchain_api_key"
 
 4. **To run the main chatbot application:**
-    poetry run python ai_chatbot
+    cd backend
+    poetry run python ai_chatbot/__main__.py
