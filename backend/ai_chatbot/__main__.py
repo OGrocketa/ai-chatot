@@ -45,7 +45,7 @@ qa_system_prompt = (
     "the following pieces of retrieved context to answer the "
     "question. If you don't know the answer, just say that you "
     "don't know. If the knowledge is in the context start with from the pdf:...."
-    " If the knwoledge is not in the context, you can answer using your knwoledge"
+    " If the knowledge is not in the context, you can answer using your knowledge"
     "\n\n"
     "{context}"
 )
@@ -63,7 +63,7 @@ question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
 rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
 joke_message = [SystemMessage(content="Act as a world class stand-up comedian."
-                                "Genearte a very short joke about humans.")]
+                                "Generate a very short joke about humans.")]
 
 
 
