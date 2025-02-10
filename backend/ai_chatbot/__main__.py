@@ -9,7 +9,6 @@ from langchain.chains.history_aware_retriever import create_history_aware_retrie
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 
-
 load_dotenv()
 
 llm = ChatGroq(model="llama-3.3-70b-versatile")
