@@ -22,6 +22,8 @@ An AI-powered chatbot that uses LangChain and PDF processing to answer questions
 3. **Configure environment variables:**
     Create a .env file in the root directory (if not already present) with the following variables:
     GROQ_API_KEY="your_groq_api_key"
+
+    Additional:
     PDF_ENDPOINT="your_pdf_endpoint_api_key" - not necessary if scraper not used
 
     If you want to use LangSmith also add:
