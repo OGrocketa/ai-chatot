@@ -58,6 +58,8 @@ class RagHandler:
             pdf_chunks, embeddings, persist_directory=self.persistent_directory
         )
 
+
+
     
     def get_relevant_info_from_chroma(self, query):
         # default to mmr retriever if no type is provided
