@@ -115,7 +115,7 @@ def process_file(uploaded_file):
     destination = os.path.join(pdf_dir, file_name)
     
     shutil.copy(uploaded_file, destination)
-    
+
     ragHandler = RagHandler()
     pdf_directory = os.path.join(os.path.dirname(__file__), "pdfs")
     ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
@@ -137,4 +137,15 @@ with gr.Blocks() as demo:
     )
 
 if __name__ == "__main__":
-    demo.launch(share=True)
+    try:
+        demo.launch(share=True)
+    finally:
+        # Cleanup the pdfs directory after the app closes
+        pdf_dir = os.path.join(os.path.dirname(__file__), "pdfs")
+        if os.path.exists(pdf_dir):
+            for filename in os.listdir(pdf_dir):
+                file_path = os.path.join(pdf_dir, filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+        
+        

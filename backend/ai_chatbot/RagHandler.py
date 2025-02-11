@@ -39,12 +39,10 @@ class RagHandler:
         for pdf_file in pdf_files:
             loader = PyPDFLoader(pdf_file)
             docs = loader.load()
-            print(len(pdf_files))
             for doc in docs:
                 doc.metadata = doc.metadata or {}
                 doc.metadata["source"] = os.path.basename(pdf_file)
                 all_docs.append(doc)
-                print(os.path.basename(pdf_file))
             
             
         
