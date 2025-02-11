@@ -35,28 +35,36 @@ def chat(user_message, history):
         f"Generate a very short joke about humans. Don't repeat these jokes: {prev_jokes_str}."
     )
     dynamic_joke_message = [SystemMessage(content=dynamic_joke_prompt)]
-    
+
+  
+    response = rag_chain.invoke({"input": user_message, "chat_history": converted_history})
+    answer_text = response.get("answer", "I'm sorry, I couldn't generate an answer.")
+
+    source_files = []
+    if "context" in response:
+        for doc in response["context"]:
+            source_files.append(doc.metadata["source"])
+
+    source_files = set(source_files)
     # Generate a joke using the dynamic joke prompt
     joke_response = llm.invoke(dynamic_joke_message)
     
     # Get the answer to the user question
-    response = rag_chain.invoke({"input": user_message, "chat_history": converted_history})
-    answer_text = response.get("answer", "I'm sorry, I couldn't generate an answer.")
-    
-    # Combine the answer and the joke into one response string
-    combined_response = f"{answer_text}\n\nJoke: {joke_response.content}"
+    source_text = f"\n\n**Source:** {', '.join(source_files)}" if source_files else ""
+
+    combined_response = f"{answer_text}{source_text}\n\nJoke: {joke_response.content}"
     
     return combined_response
 
 
-def process_file(uploaded_file):
+def process_file(uploaded_files):
     pdf_dir = os.path.join(os.path.dirname(__file__), "pdfs")
     os.makedirs(pdf_dir, exist_ok=True)
     
-    file_name = os.path.basename(uploaded_file)
-    destination = os.path.join(pdf_dir, file_name)
-    
-    shutil.copy(uploaded_file, destination)
+    for uploaded_file in uploaded_files:
+        file_name = os.path.basename(uploaded_file.name)
+        destination = os.path.join(pdf_dir, file_name)
+        shutil.copy(uploaded_file.name, destination)
 
     ragHandler = RagHandler()
     pdf_directory = os.path.join(os.path.dirname(__file__), "pdfs")
@@ -67,7 +75,7 @@ with gr.Blocks() as demo:
     
     file_upload = gr.Interface(
         fn=process_file,
-        inputs=gr.File(label="Upload a PDF file",file_types=[".pdf"]),
+        inputs=gr.File(label="Upload a PDF file",file_types=[".pdf"],file_count='multiple'),
         outputs= gr.Textbox(label="Upload Status")   
     )
     chat_interface = gr.ChatInterface(
@@ -94,6 +102,8 @@ if __name__ == "__main__":
         "formulate a standalone question which can be understood "
         "without the chat history. Do NOT answer the question, just "
         "reformulate it if needed and otherwise return it as is."
+        "Also take into account, that you should answer only one question "
+        "which user refers to. Don't accumulate answers from multiple questions."
     )
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages([

@@ -8,7 +8,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 class RagHandler:
     def __init__(self):
         self.current_dir = os.path.dirname(__file__)
-        self.persistent_directory = os.path.join(self.current_dir, "db", "chroma_db")
+        self.persistent_directory = os.path.join(self.current_dir,"chroma_db")
 
     def create_chroma_storage_from_pdf_directory(self, pdf_directory):
         """
