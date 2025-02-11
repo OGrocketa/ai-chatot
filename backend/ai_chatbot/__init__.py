@@ -10,6 +10,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
+import shutil
 
 load_dotenv()
 
@@ -19,7 +20,7 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 # Set up the RAG handler and load PDFs into chroma vector storage
 ragHandler = RagHandler()
 pdf_directory = os.path.join(os.path.dirname(__file__), "pdfs")
-ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
+# ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
 
 
 # Create a prompt to reformulate user questions (so that they are standalone)
@@ -106,14 +107,30 @@ def chat(user_message, history):
     return combined_response
 
 
-demo = gr.ChatInterface(
-    fn=chat,
-    title="PDF Chatbot with Jokes",
-    description="Ask questions about your PDF",
-    type="messages",
-    save_history=True
+def process_file(uploaded_file):
+    pdf_dir = os.path.join(os.path.dirname(__file__), "pdfs")
+    os.makedirs(pdf_dir, exist_ok=True)
     
-)
+    file_name = os.path.basename(uploaded_file)
+    destination = os.path.join(pdf_dir, file_name)
+    
+    shutil.copy(uploaded_file, destination)
+
+
+with gr.Blocks() as demo:
+    
+    file_upload = gr.Interface(
+        fn=process_file,
+        inputs=gr.File(label="Upload a PDF file",file_types=[".pdf"]),
+        outputs= gr.Textbox(label="Upload Status")   
+    )
+    chat_interface = gr.ChatInterface(
+        fn=chat,
+        title="PDF Chatbot with Jokes",
+        description="Ask questions about your PDF",
+        type="messages",
+        save_history=True
+    )
 
 if __name__ == "__main__":
     demo.launch(share=True)
