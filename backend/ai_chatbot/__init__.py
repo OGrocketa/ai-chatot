@@ -28,7 +28,7 @@ def chat(user_message, history):
                     joke_part = msg["content"].split("Joke:")[-1].strip()
                     if joke_part:
                         previous_jokes.append(joke_part)
-    
+
     # Build a dynamic joke prompt (avoid repeating jokes already told)
     prev_jokes_str = ", ".join(previous_jokes) if previous_jokes else "none"
     dynamic_joke_prompt = (
@@ -78,6 +78,7 @@ with gr.Blocks() as demo:
         save_history=True
     )
 
+
 if __name__ == "__main__":
     load_dotenv()
 
@@ -112,6 +113,7 @@ if __name__ == "__main__":
         "the following pieces of retrieved context to answer the "
         "question. If you don't know the answer, just say that you "
         "don't know. If the knowledge is in the context start with from the pdf:...."
+        "If you find the data in the context dont add your knowledge unless asked for"
         "You should also reference the file from which the data was extracted"
         "If the knowledge is not in the context, you can answer using your knowledge, but"
         "You have to specify that the information is not in the pdf and is your knowledge"
@@ -133,7 +135,7 @@ if __name__ == "__main__":
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
     try:
-        demo.launch(share=True)
+        demo.launch()
     finally:
         # Cleanup the pdfs directory after the app closes
         pdf_dir = os.path.join(os.path.dirname(__file__), "pdfs")

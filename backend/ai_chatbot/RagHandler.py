@@ -4,9 +4,6 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter  
 
-current_dir = os.path.dirname(__file__)
-pdf_path = os.path.join(current_dir, "test.pdf")
-persistent_directory = os.path.join(current_dir, "db", "chroma_db")
 
 class RagHandler:
     def __init__(self):
@@ -19,7 +16,7 @@ class RagHandler:
         adds metadata (e.g., filename) to each document, and creates a persistent
         Chroma vector store if it does not already exist.
         """
-        print("Initializing vector store...")
+
         if not os.path.exists(pdf_directory):
             raise FileNotFoundError(
                 f"The directory {pdf_directory} does not exist. Please check the path."
@@ -43,7 +40,7 @@ class RagHandler:
                 doc.metadata = doc.metadata or {}
                 doc.metadata["source"] = os.path.basename(pdf_file)
                 all_docs.append(doc)
-            
+
             
         
         # Split the documents into manageable chunks.
@@ -98,14 +95,3 @@ class RagHandler:
         
         return retriever
     
-    def clean_up(self):
-        """
-        Cleans up the persistent directory used to store the Chroma vectors and removes pdfs
-        """
-        if os.path.exists(self.persistent_directory):
-            os.rmdir(self.persistent_directory)
-            pdfs_path = os.path.join(self.current_dir, "pdfs")
-            for file in os.listdir(pdfs_path):
-                os.remove(os.path.join(pdfs_path, file))
-        else:
-            print("Nothing to clean up. The persistent directory does not exist.")
