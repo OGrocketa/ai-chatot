@@ -7,3 +7,6 @@ lesson_links.json
 /ai_chatbot/__pycache__/
 *.pyc
 /backend/ai_chatbot/db/*
+test_files*
+/backend/ai_chatbot/__pycache__
+backend/ai_chatbot/__pycache__/RagHandler.cpython-313.pyc

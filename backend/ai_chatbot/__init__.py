@@ -18,7 +18,7 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 # Set up the RAG handler and load PDFs into chroma vector storage
 ragHandler = RagHandler()
-pdf_directory = os.path.join(os.path.dirname(__file__), "../pdfs")
+pdf_directory = os.path.join(os.path.dirname(__file__), "pdfs")
 ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
 
 
@@ -48,7 +48,8 @@ qa_system_prompt = (
     "the following pieces of retrieved context to answer the "
     "question. If you don't know the answer, just say that you "
     "don't know. If the knowledge is in the context start with from the pdf:...."
-    " If the knowledge is not in the context, you can answer using your knowledge, but"
+    "You should also reference the file from which the data was extracted"
+    "If the knowledge is not in the context, you can answer using your knowledge, but"
     "You have to specify that the information is not in the pdf and is your knowledge"
     "Answer in the language of the question, if you dont the language ask the user"
     "To change the language of the answer preferably to english"

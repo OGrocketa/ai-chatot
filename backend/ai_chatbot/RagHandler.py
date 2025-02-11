@@ -6,12 +6,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 current_dir = os.path.dirname(__file__)
 pdf_path = os.path.join(current_dir, "test.pdf")
-presistent_directory = os.path.join(current_dir, "db", "chroma_db")
+persistent_directory = os.path.join(current_dir, "db", "chroma_db")
 
 class RagHandler:
     def __init__(self):
         self.current_dir = os.path.dirname(__file__)
-        self.presistent_directory = os.path.join(self.current_dir, "db", "chroma_db")
+        self.persistent_directory = os.path.join(self.current_dir, "db", "chroma_db")
 
     def create_chroma_storage_from_pdf_directory(self, pdf_directory):
         """
@@ -20,7 +20,7 @@ class RagHandler:
         Chroma vector store if it does not already exist.
         """
         # Only initialize the vector store if it doesn't already exist.
-        if not os.path.exists(self.presistent_directory):
+        if not os.path.exists(self.persistent_directory):
             print("Initializing vector store...")
             if not os.path.exists(pdf_directory):
                 raise FileNotFoundError(
@@ -41,13 +41,14 @@ class RagHandler:
             for pdf_file in pdf_files:
                 loader = PyPDFLoader(pdf_file)
                 docs = loader.load()
-                
-                # Optionally add metadata (like the filename) to each document.
+                print(len(pdf_files))
                 for doc in docs:
                     doc.metadata = doc.metadata or {}
                     doc.metadata["source"] = os.path.basename(pdf_file)
+                    all_docs.append(doc)
+                    print(os.path.basename(pdf_file))
                 
-                all_docs.extend(docs)
+                
             
             # Split the documents into manageable chunks.
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
@@ -58,7 +59,7 @@ class RagHandler:
             
             # Create and persist the vector store.
             Chroma.from_documents(
-                pdf_chunks, embeddings, persist_directory=self.presistent_directory
+                pdf_chunks, embeddings, persist_directory=self.persistent_directory
             )
         else:
             print("Vector store already exists. Skipping initialization.")
@@ -79,7 +80,7 @@ class RagHandler:
           - "similarity_score_threshold"
         """
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-        db = Chroma(persist_directory=self.presistent_directory, embedding_function=embeddings)
+        db = Chroma(persist_directory=self.persistent_directory, embedding_function=embeddings)
         
         if retriever_type == "mmr":
             retriever = db.as_retriever(
@@ -100,3 +101,15 @@ class RagHandler:
             raise ValueError("unsupported retriever type. please choose from 'mmr', 'similarity', or 'similarity_score_threshold'.")
         
         return retriever
+    
+    def clean_up(self):
+        """
+        Cleans up the persistent directory used to store the Chroma vectors and removes pdfs
+        """
+        if os.path.exists(self.persistent_directory):
+            os.rmdir(self.persistent_directory)
+            pdfs_path = os.path.join(self.current_dir, "pdfs")
+            for file in os.listdir(pdfs_path):
+                os.remove(os.path.join(pdfs_path, file))
+        else:
+            print("Nothing to clean up. The persistent directory does not exist.")
