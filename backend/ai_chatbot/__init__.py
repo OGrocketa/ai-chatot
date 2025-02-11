@@ -115,6 +115,10 @@ def process_file(uploaded_file):
     destination = os.path.join(pdf_dir, file_name)
     
     shutil.copy(uploaded_file, destination)
+    
+    ragHandler = RagHandler()
+    pdf_directory = os.path.join(os.path.dirname(__file__), "pdfs")
+    ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
 
 
 with gr.Blocks() as demo:
