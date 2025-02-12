@@ -156,3 +156,6 @@ if __name__ == "__main__":
         pdf_dir = os.path.join(os.path.dirname(__file__), "pdfs")
         if os.path.exists(pdf_dir):
             shutil.rmtree(pdf_dir)
+        db_dir = os.path.join(os.path.dirname(__file__), "chroma_db")
+        if os.path.exists(db_dir):
+            shutil.rmtree(db_dir)
