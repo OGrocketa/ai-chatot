@@ -2,6 +2,6 @@
 .venv
 .DS_Store
 .gradio
-/backend/ai_chatbot/db/*
-backend/ai_chatbot/__pycache__/
-backend/ai_chatbot/chroma_db/
+/ai_chatbot/db/*
+/ai_chatbot/__pycache__/
+/ai_chatbot/chroma_db/
