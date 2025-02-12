@@ -31,9 +31,14 @@ def chat(user_message, history):
 
     # Build a dynamic joke prompt (avoid repeating jokes already told)
     prev_jokes_str = ", ".join(previous_jokes) if previous_jokes else "none"
+
     dynamic_joke_prompt = (
-        f"Generate a very short joke about humans. Don't repeat these jokes: {prev_jokes_str}."
+        f"Generate a very short joke related to the following user input: '{user_message}'. "
+        f"The joke should be simple and fun, and assume the user tolerates all kinds of jokes. "
+        f"Don't repeat these jokes: {prev_jokes_str}"
     )
+
+
     dynamic_joke_message = [SystemMessage(content=dynamic_joke_prompt)]
 
   

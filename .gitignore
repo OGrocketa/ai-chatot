@@ -1,12 +1,7 @@
 .env
 .venv
-/ai_chatbot/db
-lesson_links.json
 .DS_Store
 .gradio
-/ai_chatbot/__pycache__/
-*.pyc
 /backend/ai_chatbot/db/*
-test_files*
-/backend/ai_chatbot/__pycache__
-backend/ai_chatbot/__pycache__/RagHandler.cpython-313.pyc
+backend/ai_chatbot/__pycache__/
+backend/ai_chatbot/chroma_db/
