@@ -35,4 +35,4 @@ AI's used:
 
 4. **To run the main chatbot application:**
     ```shell
-    poetry run python backend/ai_chatbot/__init__.py
+    poetry run python ai_chatbot/__init__.py

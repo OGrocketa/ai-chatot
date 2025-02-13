@@ -9,7 +9,6 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_chroma import Chroma
 import shutil
 
 def chat(user_message, history):
@@ -75,13 +74,14 @@ def process_file(uploaded_files):
     pdf_directory = os.path.join(os.path.dirname(__file__), "pdfs")
     ragHandler.create_chroma_storage_from_pdf_directory(pdf_directory)
 
+    return "Files uploaded, you can ask questions"
 
 with gr.Blocks() as demo:
     
     file_upload = gr.Interface(
         fn=process_file,
         inputs=gr.File(label="Upload a PDF file",file_types=[".pdf"],file_count='multiple'),
-        outputs= gr.Textbox(label="Upload Status")   
+        outputs= gr.Textbox(value="Submit PDF's to ask about them", label="Upload Status")   
     )
     chat_interface = gr.ChatInterface(
         fn=chat,
@@ -95,6 +95,7 @@ with gr.Blocks() as demo:
 if __name__ == "__main__":
     load_dotenv()
 
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
     llm = ChatGroq(model="llama-3.3-70b-versatile")
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     ragHandler = RagHandler()
@@ -109,6 +110,7 @@ if __name__ == "__main__":
         "reformulate it if needed and otherwise return it as is."
         "Also take into account, that you should answer only one question "
         "which user refers to. Don't accumulate answers from multiple questions."
+        "Make sure that a rephrased question is a standalone question and doesn't answer previous questions."
     )
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages([
