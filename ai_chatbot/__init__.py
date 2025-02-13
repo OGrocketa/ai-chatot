@@ -43,7 +43,6 @@ def chat(user_message, history):
   
     response = rag_chain.invoke({"input": user_message, "chat_history": converted_history})
     answer_text = response.get("answer", "I'm sorry, I couldn't generate an answer.")
-
     source_files = []
     if "context" in response:
         for doc in response["context"]:
@@ -53,11 +52,9 @@ def chat(user_message, history):
     # Generate a joke using the dynamic joke prompt
     joke_response = llm.invoke(dynamic_joke_message)
     
-    # Get the answer to the user question
     source_text = f"\n\n**Source:** {', '.join(source_files)}" if source_files else ""
 
     combined_response = f"{answer_text}{source_text}\n\nJoke: {joke_response.content}"
-    
     return combined_response
 
 
@@ -108,9 +105,10 @@ if __name__ == "__main__":
         "formulate a standalone question which can be understood "
         "without the chat history. Do NOT answer the question, just "
         "reformulate it if needed and otherwise return it as is."
-        "Also take into account, that you should answer only one question "
+        "Also take into account, that you should answer only last question "
         "which user refers to. Don't accumulate answers from multiple questions."
-        "Make sure that a rephrased question is a standalone question and doesn't answer previous questions."
+        "It is very important that you make sure that a rephrased question is a standalone"
+        "question and doesn't answer previous questions."
     )
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages([
@@ -120,7 +118,7 @@ if __name__ == "__main__":
     ])
 
     # Create a history-aware retriever
-    retriever = ragHandler.create_retriever("similarity_score_threshold")
+    retriever = ragHandler.create_retriever("mmr")
     history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
 
 
@@ -131,11 +129,12 @@ if __name__ == "__main__":
         "question. If you don't know the answer, just say that you "
         "don't know. If the knowledge is in the context start with from the pdf:...."
         "If you find the data in the context dont add your knowledge unless asked for"
-        "You should also reference the file from which the data was extracted"
         "If the knowledge is not in the context, you can answer using your knowledge, but"
         "You have to specify that the information is not in the pdf and is your knowledge"
         "Answer in the language of the question, if you dont the language ask the user"
         "To change the language of the answer preferably to english"
+        "Answer questions without repeating previous answers, "
+        "Only provide answer to the most recent question"
         "{context}"
     )
 
