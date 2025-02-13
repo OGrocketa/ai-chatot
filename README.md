@@ -27,12 +27,6 @@ AI's used:
     Create a .env file in the root directory (if not already present) with the following variables:
     GROQ_API_KEY="your_groq_api_key"
 
-    If you want to use LangSmith also add:
-    LANGSMITH_TRACING=true
-    LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-    LANGSMITH_PROJECT="ai-chatbot"
-    LANGCHAIN_API_KEY="your_langchain_api_key"
-
 4. **To run the main chatbot application:**
     ```shell
     poetry run python ai_chatbot/__init__.py
