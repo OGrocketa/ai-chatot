@@ -120,7 +120,7 @@ if __name__ == "__main__":
     ])
 
     # Create a history-aware retriever
-    retriever = ragHandler.create_retriever("mmr")
+    retriever = ragHandler.create_retriever("similarity_score_threshold")
     history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
 
 

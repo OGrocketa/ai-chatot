@@ -88,7 +88,7 @@ class RagHandler:
         elif retriever_type == "similarity_score_threshold":
             retriever = db.as_retriever(
                 search_type="similarity_score_threshold", 
-                search_kwargs={'k': 6, 'score_threshold': 0.9}
+                search_kwargs={'k': 6, 'score_threshold': 0.2}
             )
         else:
             raise ValueError("unsupported retriever type. please choose from 'mmr', 'similarity', or 'similarity_score_threshold'.")
