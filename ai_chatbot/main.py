@@ -109,6 +109,8 @@ if __name__ == "__main__":
         "which user refers to. Don't accumulate answers from multiple questions."
         "It is very important that you make sure that a rephrased question is a standalone"
         "question and doesn't answer previous questions."
+        "<important>Answer the questions as if you were the user. Since I will put the answer"
+        "For the retriever </important> to find the answer, you need to make sure that the question is standalone"
     )
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages([

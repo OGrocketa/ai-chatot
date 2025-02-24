@@ -3,6 +3,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter  
+from langchain_experimental.text_splitter import SemanticChunker
 
 
 class RagHandler:
@@ -41,14 +42,14 @@ class RagHandler:
                 doc.metadata["source"] = os.path.basename(pdf_file)
                 all_docs.append(doc)
 
-            
-        
-        # Split the documents into manageable chunks.
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        pdf_chunks = text_splitter.split_documents(all_docs)
-        
         # Create embeddings.
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        
+        # Split the documents into manageable chunks.
+        text_splitter = SemanticChunker(embeddings,breakpoint_threshold_type="percentile", breakpoint_threshold_amount=75.0)
+        pdf_chunks = text_splitter.split_documents(all_docs)
+        
+       
         
         # Create and persist the vector store.
         Chroma.from_documents(
@@ -78,17 +79,17 @@ class RagHandler:
         if retriever_type == "mmr":
             retriever = db.as_retriever(
                 search_type="mmr", 
-                search_kwargs={'k': 6, 'lambda_mult': 0.25}
+                search_kwargs={'k': 20, 'lambda_mult': 0.25}
             )
         elif retriever_type == "similarity":
             retriever = db.as_retriever(
                 search_type="similarity", 
-                search_kwargs={'k': 6}
+                search_kwargs={'k': 20}
             )
         elif retriever_type == "similarity_score_threshold":
             retriever = db.as_retriever(
                 search_type="similarity_score_threshold", 
-                search_kwargs={'k': 6, 'score_threshold': 0.9}
+                search_kwargs={'k': 20, 'score_threshold': 0.9}
             )
         else:
             raise ValueError("unsupported retriever type. please choose from 'mmr', 'similarity', or 'similarity_score_threshold'.")
